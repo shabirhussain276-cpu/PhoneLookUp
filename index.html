@@ -1,56 +1,68 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Country Info Lookup</title>
+  <title>Phone Number with Country Code</title>
 </head>
 <body>
-  <h1>Country Information Lookup</h1>
-  <label for="countryCode">Enter Country Code (e.g., US, IN, FR): </label>
-  <input type="text" id="countryCode" placeholder="Country Code" />
-  <button onclick="lookupCountry()">Get Info</button>
+  <h1>Enter Your Phone Number</h1>
 
-  <div id="result" style="margin-top:20px;"></div>
+  <label for="countrySelect">Select Country: </label>
+  <select id="countrySelect" onchange="updateCountryCode()">
+    <option value="">--Select Country--</option>
+    <option value="US">United States</option>
+    <option value="IN">India</option>
+    <option value="FR">France</option>
+    <option value="PK">Pakistan</option>
+    <option value="GR">Greece</option>
+  </select>
+
+  <br/><br/>
+
+  <label for="phoneNumber">Phone Number: </label>
+  <input type="tel" id="phoneNumber" placeholder="Enter phone number" />
 
   <script>
-    // Sample country data
-    const countryData = {
-      "US": {
-        name: "United States",
-        capital: "Washington, D.C.",
-        population: 331000000,
-        callingCode: "+1"
-      },
-      "IN": {
-        name: "India",
-        capital: "New Delhi",
-        population: 1380004385,
-        callingCode: "+91"
-      },
-      "FR": {
-        name: "France",
-        capital: "Paris",
-        population: 67000000,
-        callingCode: "+33"
-      },
-      // Add more countries as needed
+    const countries = {
+      "US": { name: "United States", code: "+1" },
+      "IN": { name: "India", code: "+91" },
+      "FR": { name: "France", code: "+33" },
+      "PK": { name: "Pakistan", code: "+92" },
+      "GR": { name: "Greece", code: "+30" }
     };
 
-    function lookupCountry() {
-      const code = document.getElementById('countryCode').value.trim().toUpperCase();
-      const resultDiv = document.getElementById('result');
+    function updateCountryCode() {
+      const select = document.getElementById('countrySelect');
+      const phoneInput = document.getElementById('phoneNumber');
+      const selectedCode = select.value;
 
-      if (countryData[code]) {
-        const country = countryData[code];
-        resultDiv.innerHTML = `
-          <h2>${country.name}</h2>
-          <p><strong>Capital:</strong> ${country.capital}</p>
-          <p><strong>Population:</strong> ${country.population.toLocaleString()}</p>
-          <p><strong>Calling Code:</strong> ${country.callingCode}</p>
-        `;
+      if (countries[selectedCode]) {
+        const countryCode = countries[selectedCode].code;
+        // Remove any existing country code prefix
+        let currentNumber = phoneInput.value.replace(/^\+\d+\s?/, '');
+        // Set the new country code prefix
+        phoneInput.value = countryCode + ' ' + currentNumber;
       } else {
-        resultDiv.innerHTML = `<p>Country code not found.</p>`;
+        // If no country selected, do not add code
+        // Optionally, clear prefix if desired
+        // phoneInput.value = '';
       }
     }
+
+    // Optional: When user edits the number, keep the country code prefix intact
+    document.getElementById('phoneNumber').addEventListener('input', function() {
+      const select = document.getElementById('countrySelect');
+      const selectedCode = select.value;
+      if (countries[selectedCode]) {
+        const countryCode = countries[selectedCode].code;
+        let currentNumber = this.value;
+        // If user deletes the prefix, re-add it
+        if (!currentNumber.startsWith(countryCode)) {
+          // Remove existing prefix if any
+          currentNumber = currentNumber.replace(/^\+\d+\s?/, '');
+          this.value = countryCode + ' ' + currentNumber;
+        }
+      }
+    });
   </script>
 </body>
 </html>
