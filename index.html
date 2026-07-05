@@ -1,107 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Location Lookup & Phone Number Input</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-  }
-  label {
-    display: block;
-    margin-top: 10px;
-  }
-  input, select, button {
-    padding: 8px;
-    width: 300px;
-    max-width: 100%;
-    margin-top: 5px;
-  }
-  #result {
-    margin-top: 20px;
-  }
-</style>
+  <title>Country Info Lookup</title>
 </head>
 <body>
+  <h1>Country Information Lookup</h1>
+  <label for="countryCode">Enter Country Code (e.g., US, IN, FR): </label>
+  <input type="text" id="countryCode" placeholder="Country Code" />
+  <button onclick="lookupCountry()">Get Info</button>
 
-<h2>Location Lookup & Phone Number Entry</h2>
+  <div id="result" style="margin-top:20px;"></div>
 
-<!-- Location Lookup Section -->
-<h3>Lookup Holder Location</h3>
-<label for="locationName">Holder Name:</label>
-<input type="text" id="locationName" placeholder="Enter holder name" />
+  <script>
+    // Sample country data
+    const countryData = {
+      "US": {
+        name: "United States",
+        capital: "Washington, D.C.",
+        population: 331000000,
+        callingCode: "+1"
+      },
+      "IN": {
+        name: "India",
+        capital: "New Delhi",
+        population: 1380004385,
+        callingCode: "+91"
+      },
+      "FR": {
+        name: "France",
+        capital: "Paris",
+        population: 67000000,
+        callingCode: "+33"
+      },
+      // Add more countries as needed
+    };
 
-<button onclick="lookupLocation()">Lookup Location</button>
+    function lookupCountry() {
+      const code = document.getElementById('countryCode').value.trim().toUpperCase();
+      const resultDiv = document.getElementById('result');
 
-<div id="locationResult"></div>
-
-<!-- Phone Number Entry Section -->
-<h3>Add Phone Number</h3>
-<label for="phoneNumber">Number:</label>
-<input type="tel" id="phoneNumber" placeholder="Enter phone number" />
-
-<label for="countrySelect">Country:</label>
-<select id="countrySelect">
-  <option value="">Select Country</option>
-  <option value="US" data-code="+1">United States</option>
-  <option value="IN" data-code="+91">India</option>
-  <option value="GB" data-code="+44">United Kingdom</option>
-  <option value="CA" data-code="+1">Canada</option>
-  <option value="AU" data-code="+61">Australia</option>
-  <!-- Add more countries as needed -->
-</select>
-
-<label for="countryCode">Country Code:</label>
-<input type="text" id="countryCode" readonly />
-
-<button onclick="addPhoneNumber()">Add Phone Number</button>
-
-<div id="phoneNumberDisplay"></div>
-
-<script>
-  // Sample data for location lookup
-  const locationData = {
-    "John Doe": { city: "New York", country: "United States" },
-    "Jane Smith": { city: "London", country: "United Kingdom" },
-    "Rahul Kumar": { city: "Mumbai", country: "India" }
-  };
-
-  function lookupLocation() {
-    const name = document.getElementById('locationName').value.trim();
-    const resultDiv = document.getElementById('locationResult');
-
-    if (name in locationData) {
-      const data = locationData[name];
-      resultDiv.innerHTML = `<strong>City:</strong> ${data.city}<br><strong>Country:</strong> ${data.country}`;
-    } else {
-      resultDiv.innerHTML = "Location data not found.";
+      if (countryData[code]) {
+        const country = countryData[code];
+        resultDiv.innerHTML = `
+          <h2>${country.name}</h2>
+          <p><strong>Capital:</strong> ${country.capital}</p>
+          <p><strong>Population:</strong> ${country.population.toLocaleString()}</p>
+          <p><strong>Calling Code:</strong> ${country.callingCode}</p>
+        `;
+      } else {
+        resultDiv.innerHTML = `<p>Country code not found.</p>`;
+      }
     }
-  }
-
-  // Update country code based on selected country
-  document.getElementById('countrySelect').addEventListener('change', function() {
-    const selectedOption = this.options[this.selectedIndex];
-    const code = selectedOption.getAttribute('data-code') || '';
-    document.getElementById('countryCode').value = code;
-  });
-
-  function addPhoneNumber() {
-    const number = document.getElementById('phoneNumber').value.trim();
-    const country = document.getElementById('countrySelect').value;
-    const code = document.getElementById('countryCode').value;
-
-    if (!number || !country || !code) {
-      alert('Please enter all fields.');
-      return;
-    }
-
-    const displayDiv = document.getElementById('phoneNumberDisplay');
-    const formattedNumber = `${code} ${number}`;
-    displayDiv.innerHTML += `<p>${formattedNumber} (${country})</p>`;
-  }
-</script>
-
+  </script>
 </body>
 </html>
